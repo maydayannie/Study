@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop  
+	http://www.springframework.org/schema/aop/spring-aop.xsd">
+	<aop:aspectj-autoproxy/> 
+    <aop:config>
+        <aop:pointcut expression="execution(public * online.store.service..*.log*(..))" 
+        id="servicePointcut"/>
+         <aop:pointcut expression="execution(public * online.store.service..*.do*(..))" 
+        id="doServicePointcut"/>
+         <aop:pointcut expression="within(@org.springframework.stereotype.Service *)" 
+        id="doTransactionPointCut"/> 
+              
+        <aop:aspect id="logAspect" ref="loggingAspect">
+<!--             <aop:around method="around" pointcut-ref="servicePointcut"/> -->
+<!--             <aop:before method="before" pointcut-ref="doServicePointcut"/>    -->
+<!--             <aop:after method="after" pointcut-ref="doServicePointcut"/> -->
+			<aop:around method="doTransaction" pointcut-ref="doTransactionPointCut"/>
+        </aop:aspect>       
+    </aop:config>
+    <bean id="loggingAspect" class="online.store.aop.LoggingAspect" />
+	<bean id="onlineStoreController" class="online.store.controller.OnlineStoreController" />
+	<!-- <aop:config> -->
+	<!-- <aop:pointcut id="serviceMethods" -->
+	<!-- expression="execution(* com.tradevan.geinv..service.*Service.*(..))" 
+		/> -->
+	<!-- <aop:advisor advice-ref="txAdvice" -->
+	<!-- pointcut-ref="serviceMethods" /> -->
+	<!-- </aop:config> -->
+	<!-- <tx:advice id="txAdvice" -->
+	<!-- transaction-manager="transactionManager"> -->
+	<!-- <tx:attributes> -->
+	<!-- <tx:method name="insert*" propagation="REQUIRED" /> -->
+	<!-- <tx:method name="update*" propagation="REQUIRED" /> -->
+	<!-- <tx:method name="delete*" propagation="REQUIRED" /> -->
+	<!-- <tx:method name="query*" propagation="NOT_SUPPORTED" /> -->
+	<!-- <tx:method name="*" propagation="SUPPORTS" read-only="true" /> -->
+	<!-- </tx:attributes> -->
+	<!-- </tx:advice> -->
+</beans>
