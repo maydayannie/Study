@@ -25,7 +25,7 @@ public class ExampleServlet extends HttpServlet {
      */
     public ExampleServlet() {
     	logger.info("Exmaple is initial");
-	logger.info("Exmaple is initial");
+	logger.info("Exmaple is initial123");
     }
 
 	/**
