@@ -17,7 +17,7 @@ public class LoggingAspect {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger.info("logAfter");
+		logger.info("logAfter------");
 	}
 	public void before(JoinPoint joinPoint) {
 		
