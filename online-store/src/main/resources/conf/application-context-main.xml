@@ -8,5 +8,7 @@
 <!--     	<context:exclude-filter type="Controller" expression=""/> -->
     </context:component-scan>
     <context:property-placeholder location="classpath:conf/application.properties"/>
-    <import resource="application-context-aop.xml"/>
+<!--     <import resource="application-context-aop.xml"/> -->
+    <import resource="application-context-database.xml"/>
+    
 </beans>

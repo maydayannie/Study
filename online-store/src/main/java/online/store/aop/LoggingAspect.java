@@ -8,16 +8,18 @@ import org.aspectj.lang.annotation.Aspect;
 @Aspect
 public class LoggingAspect {
 	Logger logger = LogManager.getLogger(LoggingAspect.class);
-	public void around(ProceedingJoinPoint joinPoint) {
+	public Object around(ProceedingJoinPoint joinPoint) {
 		logger.info("logBefore");
 		Object target = joinPoint.getTarget();
+		Object a = null;
 		try {
-			Object a = joinPoint.proceed();
+			a = joinPoint.proceed();
 		} catch (Throwable e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		logger.info("logAfter------");
+		return a;
 	}
 	public void before(JoinPoint joinPoint) {
 		
