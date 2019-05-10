@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html>
 <head>
 <title>Hello World</title>
@@ -17,7 +18,7 @@ td, th {
 </style>
 </head>
 <body>
-
+ <form:form method="POST" action="doLogin" modelAttribute="cusForm">
   <table> 
 <%--    <tr>
      <th>CusID</th>
@@ -32,17 +33,15 @@ td, th {
    
    <tr>
      <th>CusID帳號</th>
-     <th>CusName姓名</th>
      <th>Password密碼</th>
    </tr>
    <tr>
-     <td>${customer.cusId}</td>
-     <td>${customer.cusName}</td>
-     <td>${customer.password}</td>
+     <td><input type="text" name="cusId" value=""></td>
+     <td><input type="text" name="password" value=""></td>
     </tr>  
   </table>
-  
-  <input type ="button" onclick="history.back()" value="回到上一頁"></input>
+  <input type="submit" value="確定">
+  </form:form>
 </body>
 </html>
 

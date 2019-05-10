@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import model.Customer;
 import online.store.dao.OnlineStoreDAO;
@@ -42,9 +43,36 @@ public class OnlineStoreServiceImpl implements OnlineStoreService {
 
 	@Transactional
 	@Override
-	public Customer query() {
-		Customer c = this.onlineStoreDAO.search("C001");
-		logger.info(c.toString());
+	public Customer query(String cusid) throws Exception {	
+//		Customer c = this.onlineStoreDAO.search("C001");
+//		logger.info(c.toString());
+		Customer c = null;
+
+		try {
+			c = this.onlineStoreDAO.search(cusid);
+			System.out.println("login success");
+		}catch(NullPointerException ex){
+			ex.printStackTrace();
+			System.out.println("查無此帳號");
+			throw ex;		
+		}		
 		return c;
 	}
+
+	@Override
+	public Customer checkCustomer(String cusid, String pwd) throws Exception {
+		return onlineStoreDAO.checkLogin(cusid, pwd);
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+

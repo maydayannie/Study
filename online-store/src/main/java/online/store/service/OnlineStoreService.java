@@ -8,6 +8,7 @@ public interface OnlineStoreService {
 	public void logB() throws Exception;
 	public void doA();
 	public void doB();
-	public Customer query();
+	public Customer query(String cusid) throws Exception;
+	public Customer checkCustomer(String cusid , String pwd) throws Exception;
 }
 
