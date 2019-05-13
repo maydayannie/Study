@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import java.util.List;
 
 
 /**
@@ -17,29 +18,18 @@ public class CartBase implements Serializable {
 	@Id
 	@Column(name="CART_ID")
 	private String cartId;
-	
-	@Column(name="CUS_ID")
-	private String cusId;
 
-
-	//uni-directional one-to-one association to Customer
-	@OneToOne(cascade={CascadeType.ALL}, fetch=FetchType.LAZY )
-	@JoinColumn(name="CUS_ID",referencedColumnName="CUS_ID",insertable=false, updatable=false)
+	//bi-directional one-to-one association to Customer
+	@OneToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="CUS_ID")
 	private Customer customer;
+
+	//bi-directional many-to-one association to CartDtl
+	@OneToMany(mappedBy="cartBase")
+	private List<CartDtl> cartDtls;
 
 	public CartBase() {
 	}
-
-	
-	public String getCusId() {
-		return cusId;
-	}
-
-
-	public void setCusId(String cusId) {
-		this.cusId = cusId;
-	}
-
 
 	public String getCartId() {
 		return this.cartId;
@@ -57,9 +47,26 @@ public class CartBase implements Serializable {
 		this.customer = customer;
 	}
 
-	@Override
-	public String toString() {
-		return "CartBase [cartId=" + cartId + ", customer="  + "]";
+	public List<CartDtl> getCartDtls() {
+		return this.cartDtls;
+	}
+
+	public void setCartDtls(List<CartDtl> cartDtls) {
+		this.cartDtls = cartDtls;
+	}
+
+	public CartDtl addCartDtl(CartDtl cartDtl) {
+		getCartDtls().add(cartDtl);
+		cartDtl.setCartBase(this);
+
+		return cartDtl;
+	}
+
+	public CartDtl removeCartDtl(CartDtl cartDtl) {
+		getCartDtls().remove(cartDtl);
+		cartDtl.setCartBase(null);
+
+		return cartDtl;
 	}
 
 }

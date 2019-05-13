@@ -10,12 +10,12 @@ import javax.persistence.metamodel.StaticMetamodel;
 public abstract class CartBase_ {
 
 	public static volatile SingularAttribute<CartBase, String> cartId;
+	public static volatile ListAttribute<CartBase, CartDtl> cartDtls;
 	public static volatile SingularAttribute<CartBase, Customer> customer;
-	public static volatile SingularAttribute<CartBase, String> cusId;
 
 	public static final String CART_ID = "cartId";
+	public static final String CART_DTLS = "cartDtls";
 	public static final String CUSTOMER = "customer";
-	public static final String CUS_ID = "cusId";
 
 }
 

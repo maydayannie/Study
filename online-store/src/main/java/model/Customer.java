@@ -21,10 +21,9 @@ public class Customer implements Serializable {
 	private String cusName;
 
 	private String password;
-	
-//	@OneToOne(mappedBy="customer")
-	@OneToOne(cascade={CascadeType.ALL}, fetch=FetchType.LAZY )
-	@JoinColumn(name="CUS_ID",referencedColumnName="CUS_ID")
+
+	//bi-directional one-to-one association to CartBase
+	@OneToOne(mappedBy="customer", fetch=FetchType.LAZY)
 	private CartBase cartBase;
 
 	public Customer() {
@@ -32,14 +31,6 @@ public class Customer implements Serializable {
 
 	public String getCusId() {
 		return this.cusId;
-	}
-
-	public CartBase getCartBase() {
-		return cartBase;
-	}
-
-	public void setCartBase(CartBase cartBase) {
-		this.cartBase = cartBase;
 	}
 
 	public void setCusId(String cusId) {
@@ -62,9 +53,12 @@ public class Customer implements Serializable {
 		this.password = password;
 	}
 
-	@Override
-	public String toString() {
-		return "Customer [cusId=" + cusId + ", cusName=" + cusName + ", password=" + password + "]";
+	public CartBase getCartBase() {
+		return this.cartBase;
+	}
+
+	public void setCartBase(CartBase cartBase) {
+		this.cartBase = cartBase;
 	}
 
 }
