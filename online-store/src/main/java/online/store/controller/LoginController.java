@@ -56,6 +56,7 @@ public class LoginController {
 				u.setAge("10");
 				u.setName(c.getCusName());
 				u.setId(c.getCusId());
+
 				model.addAttribute("user", u);
 			} else {
 				model.addAttribute("errMsg", "Can't find your information");
