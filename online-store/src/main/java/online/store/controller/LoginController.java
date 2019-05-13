@@ -1,4 +1,5 @@
 package online.store.controller;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ public class LoginController {
 	private static final String[] ALLOWED_FIELDS = new String[] { "cusId", "cusName"};
 	Logger logger = LogManager.getLogger(LoginController.class);
 	
+	
 	@ModelAttribute("user")
 	public User getUser() {
 		return new User();
@@ -34,42 +36,43 @@ public class LoginController {
 	
 
 	@RequestMapping(value="/hello",method = RequestMethod.GET)
-//	public String hello(@SessionAttribute("user") User user) {	
-	public String hello() {
-//		if(user != null && user.getName() != null) {
-//			return "show";
-//		}
-		return "login/login-form";  
+	public String hello(@ModelAttribute("user") User user) {
+		if(user != null && user.getName() != null) {
+			return "view.login.show";
+		}
+		return "view.login.login-form";  
 	}
 	
 	@RequestMapping(value="/doLogin",method = RequestMethod.POST)
+	//The @SessionAttribute indicates that an instance of Form object will be saved in the session after end of createForm invocation 
+	//AND RETRIEVED from the session every time when the controller receives GET or POST reques
+//	public String hello(@SessionAttribute("cusForm") Customer customer) {
 	public String doLogin(@ModelAttribute("cusForm") Customer customer, ModelMap model) {
 		Customer c = null;
 		try {
 			c = service.checkCustomer(customer.getCusId(), customer.getPassword());
 			if(c != null ) {
-//				User u = new User();
-//				u.setAge("10");
-//				u.setName(c.getCusName());
-//				model.addAttribute("user", u);
-				
-				model.addAttribute("user", c);
+				User u = new User();
+				u.setAge("10");
+				u.setName(c.getCusName());
+				u.setId(c.getCusId());
+				model.addAttribute("user", u);
 			} else {
 				model.addAttribute("errMsg", "Can't find your information");
-				return "login/login-form";  
+				return "view.login.login-form";  
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			model.addAttribute("errMsg", ExceptionUtils.getStackTrace(e));
 			e.printStackTrace();
 		}
-		return "login/show";  
+		return "view.login.show";  
 	}
 	
 	@RequestMapping(value = "/doLogout", method = RequestMethod.GET)
-	public String doLogout(@SessionAttribute("user") User user, WebRequest request, SessionStatus status) {
+	public String doLogout(@ModelAttribute("user") User user, WebRequest request, SessionStatus status) {
 		logger.info(user.toString());
 	    status.setComplete();
 	    request.removeAttribute("user", WebRequest.SCOPE_SESSION);
-	    return "login/login-form";
+	    return "view.login.login-form";
 	}
 }

@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -18,8 +19,10 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import model.CartBase;
 import model.Customer;
 import model.Customer_;
+import model.Product;
 import online.store.controller.OnlineStoreController;
 
 @Repository
@@ -62,7 +65,34 @@ public class OnlineStoreDAO {
 		TypedQuery<Customer> typedQuery = this.entityManager.createQuery(criteriaQuery);
 		List<Customer> result = typedQuery.getResultList();
 		logger.info(result);
-		return result != null ? result.get(0) : null;
+		return result != null && result.size() > 0 ? result.get(0) : null;
+	}
+	
+	public List<Product> allProduct() {
+		Query query = this.entityManager.createQuery("SELECT a FROM Product a ");
+		List<Product> resultList = query.getResultList();
+		return resultList;		
+	}
+	
+	
+	public CartBase getCart(String cusId) {
+		Customer c = this.entityManager.find(Customer.class, cusId);
+		return c.getCartBase();
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

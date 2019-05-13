@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html>
 <head>
 <title>Hello World</title>
@@ -18,13 +19,14 @@ td, th {
 </head>
 <body>
 
-<%--   <h1>${user.age}</h1>
-   <h1>${user.name}</h1> --%>
-    <h1>${user.cusId}</h1>
-    <h1>${user.cusName}</h1>
-   
-  <input type ="button" onclick="history.back()" value="回到上一頁"></input>
-  <a href="doLogout">logout</a>
+  <form:form method="POST" action="/online-store/prod/doProd" modelAttribute="prodForm">
+     <h1>${user.age}</h1>
+     <h1>${user.name}</h1> 
+     <input type ="button" onclick="history.back()" value="回到上一頁!!"></input>
+     <a href="doLogout">logout</a>
+     <input type ="submit"  value="所有商品"></input>
+  </form:form>
+  
 </body>
 </html>
 

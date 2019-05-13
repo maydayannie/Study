@@ -1,14 +1,17 @@
 package online.store.service.impl;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import model.CartBase;
 import model.Customer;
+import model.Product;
 import online.store.dao.OnlineStoreDAO;
 import online.store.service.OnlineStoreService;
 import online.store.vo.User;
@@ -62,6 +65,18 @@ public class OnlineStoreServiceImpl implements OnlineStoreService {
 	@Override
 	public Customer checkCustomer(String cusid, String pwd) throws Exception {
 		return onlineStoreDAO.checkLogin(cusid, pwd);
+	}
+	
+	@Override
+	public List<Product> searchProduct() {
+		return onlineStoreDAO.allProduct();
+	}
+
+	@Override
+	public void addToCart(User user, String prodId) {
+		CartBase cartBase = onlineStoreDAO.getCart(user.getId());
+//		cartBase.get
+		
 	}
 }
 
