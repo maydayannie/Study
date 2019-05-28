@@ -2,8 +2,10 @@ package online.store.service;
 
 import java.util.List;
 
+import model.CartDtl;
 import model.Customer;
 import model.Product;
+import online.store.vo.PrdouctVO;
 import online.store.vo.User;
 
 public interface OnlineStoreService {
@@ -16,6 +18,9 @@ public interface OnlineStoreService {
 	public Customer checkCustomer(String cusid , String pwd) throws Exception;
 	public List<Product> searchProduct();
 	public void addToCart(User user, String prodId);
+	public List<CartDtl> searchCartdtl(String cartId);
+	public void delFromCart(User user, String prodId);
+	public void saveProduct(PrdouctVO vo);
 	
 }
 

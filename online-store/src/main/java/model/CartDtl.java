@@ -20,13 +20,13 @@ public class CartDtl implements Serializable {
 	private int qty;
 
 	//bi-directional many-to-one association to CartBase
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="CART_ID")
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="CART_ID" , insertable = false, updatable = false)
 	private CartBase cartBase;
 
 	//bi-directional many-to-one association to Product
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="PROD_ID")
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JoinColumn(name="PROD_ID", insertable = false, updatable = false)
 	private Product product;
 
 	public CartDtl() {

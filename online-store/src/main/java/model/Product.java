@@ -24,6 +24,9 @@ public class Product implements Serializable {
 
 	@Column(name="PROD_NAME")
 	private String prodName;
+	
+	@Column(name="FILE_NAME")
+	private String fileName;
 
 	//bi-directional many-to-one association to CartDtl
 	@OneToMany(mappedBy="product")
@@ -84,6 +87,14 @@ public class Product implements Serializable {
 		cartDtl.setProduct(null);
 
 		return cartDtl;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 }

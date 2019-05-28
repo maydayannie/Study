@@ -12,7 +12,21 @@
         http://www.springframework.org/schema/context/spring-context.xsd">
  
 <!--註解驅動，以使得訪問路徑與方法的匹配可以通過註解配置-->
-	<mvc:annotation-driven />	
+	<mvc:annotation-driven>
+		<mvc:message-converters>
+			<bean
+				class="org.springframework.http.converter.ByteArrayHttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>image/jpeg</value>
+						<value>image/jpg</value>
+						<value>image/png</value>
+						<value>image/gif</value>
+					</list>
+				</property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
 	
 <!-- Spring 可以自動去掃描base-pack下面java文件 -->	
 	<context:component-scan
@@ -53,4 +67,21 @@
         </property>  
         <property name="preparerFactoryClass" value="org.springframework.web.servlet.view.tiles3.SpringBeanPreparerFactory"></property>
     </bean>  
+    
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="jsonHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+ 
+	<bean id="jsonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>application/json</value>
+			</list>
+		</property>
+	</bean>
+
 </beans>

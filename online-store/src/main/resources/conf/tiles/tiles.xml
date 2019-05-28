@@ -10,7 +10,14 @@
 		<put-attribute name="body" value="" />
 		<put-attribute name="foot" value="/WEB-INF/jsp/template/footer.jsp" />
 	</definition>
+	
 	<definition name="view.*.*" extends="base.definition">  
-        <put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />  
+        <put-attribute name="body" value="/WEB-INF/jsp/{1}/{2}.jsp" />         
     </definition>
+    
+    <definition name="admin.*.*" extends="base.definition">  
+        <put-attribute name="body" value="/WEB-INF/jsp-admin/{1}/{2}.jsp" />         
+    </definition>
+    
+    
 </tiles-definitions>

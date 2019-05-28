@@ -24,6 +24,8 @@ dependencies {
 	api group: 'org.hibernate', name: 'hibernate-core', version: '5.4.2.Final'
 	api group: 'org.apache.logging.log4j', name: 'log4j-web', version: '2.11.2'
 	api group: 'commons-io', name: 'commons-io', version: '2.6'
+	api group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+	
 	api group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
 	api group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.6.0'
 	api 'com.google.guava:guava:27.0.1-jre'
@@ -33,6 +35,8 @@ dependencies {
 	api group: 'org.apache.tiles', name: 'tiles-core', version: '3.0.8'
 	api group: 'org.apache.tiles', name: 'tiles-servlet', version: '3.0.8'
 	api group: 'org.apache.tiles', name: 'tiles-el', version: '3.0.8'
+	api group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.8'
+	api group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.8'
     testImplementation 'junit:junit:4.12'
 }
 

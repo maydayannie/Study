@@ -14,8 +14,8 @@ public class CartDtlPK implements Serializable {
 
 	@Column(name="CART_ID")
 	private String cartId;
-
-	private int item;
+	@Column(name="PROD_ID")
+	private String prodId;
 
 	public CartDtlPK() {
 	}
@@ -25,11 +25,11 @@ public class CartDtlPK implements Serializable {
 	public void setCartId(String cartId) {
 		this.cartId = cartId;
 	}
-	public int getItem() {
-		return this.item;
+	public String getProdId() {
+		return this.prodId;
 	}
-	public void setItem(int item) {
-		this.item = item;
+	public void setProdId(String prodId) {
+		this.prodId = prodId;
 	}
 
 	public boolean equals(Object other) {
@@ -42,14 +42,14 @@ public class CartDtlPK implements Serializable {
 		CartDtlPK castOther = (CartDtlPK)other;
 		return 
 			this.cartId.equals(castOther.cartId)
-			&& (this.item == castOther.item);
+			&& (this.prodId == castOther.prodId);
 	}
 
 	public int hashCode() {
 		final int prime = 31;
 		int hash = 17;
 		hash = hash * prime + this.cartId.hashCode();
-		hash = hash * prime + this.item;
+		hash = hash * prime + this.prodId.hashCode();
 		
 		return hash;
 	}

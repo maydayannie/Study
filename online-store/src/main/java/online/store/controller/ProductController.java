@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import model.Product;
 import online.store.service.OnlineStoreService;
@@ -33,13 +34,26 @@ public class ProductController {
 		return "view.product.product-form";		
 	}
 	
-	@RequestMapping(value="/addProd/{prodId}",method = RequestMethod.POST)
-	public String doProd(@ModelAttribute("user") User user,@PathVariable String prodId, ModelMap model) {
-		logger.info("User "+user.getName() + " adds a product to the cart which id is "+ prodId);
-		service.addToCart(user,prodId);
-		return "view.product.product-form";		
+	@RequestMapping(value="/addProd/{prodId}",method = RequestMethod.GET)
+	public String addProd(@SessionAttribute("user") User user,@PathVariable("prodId") String prodId, 
+			ModelMap model) {
+		logger.info("User "+user.getName()+ " adds a product to the cart which id is "+ prodId);
+		service.addToCart(user, prodId);
+		model.addAttribute("cusCart", service.searchCartdtl(user.getCartId()));
+		return "view.cart.cart-form";		
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

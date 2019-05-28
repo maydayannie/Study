@@ -8,11 +8,11 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(CartDtlPK.class)
 public abstract class CartDtlPK_ {
 
-	public static volatile SingularAttribute<CartDtlPK, Integer> item;
 	public static volatile SingularAttribute<CartDtlPK, String> cartId;
+	public static volatile SingularAttribute<CartDtlPK, String> prodId;
 
-	public static final String ITEM = "item";
 	public static final String CART_ID = "cartId";
+	public static final String PROD_ID = "prodId";
 
 }
 
