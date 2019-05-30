@@ -3,6 +3,26 @@
 <html>
 <head>
 <title>Hello World</title>
+<style>
+  .file_drag_area{
+    width:300px;
+    height:200px;
+    border:2px dashed #ccc;
+    
+  }
+  
+  .file_drag_over{
+    color:#000;
+    border-color:#000;
+  }
+  
+  .file_photo{
+    
+    width:300px;
+    height:180px;
+    
+}
+</style>
 <script type="text/javascript">
 	$(document).ready(function() {   //載入jquery
 		$.ajax({
@@ -30,9 +50,9 @@
 			//tr.append($('<td>').append(jsonObj['fileName']));
 			//tr.append($('<td>').append('<img src="/online-store/image/getImg/"/> {jsonObj['fileName']}'));
 			var getfileName = jsonObj['fileName'];
-			var result = '<img src="/online-store/image/getImg/' + getfileName + '" width="50" height="60">';
-			
+			var result = '<img src="/online-store/image/getImg/' + getfileName + '" width="50" height="60">';			
 			tr.append($('<td>').append(result));
+			
 			
 			
 			var btnEdit = $('<button>').append('Edit');
@@ -64,7 +84,7 @@
 						console.log($(this).contents().get(0).nodeType)
 						if($(this).contents().get(0).nodeType == Node.TEXT_NODE) {
 							$(this).html($('<input>').val(content).get(0));		
-						}
+						} 
 					}); 
 				
 					$('#products').find('button').filter('.btn-outline-primary').each(function(){
@@ -166,10 +186,106 @@
 		    }
 		})
 	} */
+	
+	/* function handleFileSelect(evt) {
+	    evt.stopPropagation();
+	    evt.preventDefault();    //防止瀏覽器執行預設動作
 
+	    var files = evt.dataTransfer.files; // FileList object. 
+	    //dataTransfer負責存放被拖曳的檔案，拖曳的檔案就會在event.dataTransfer.files屬性中
+
+	    // files is a FileList of File objects. List some properties.
+	    var output = [];
+	    for (var i = 0, f; f = files[i]; i++) {
+	      output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ')</li>');
+	    }
+	    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+	  }
+	
+	function handleDragOver(evt) {
+	    evt.stopPropagation();
+	    evt.preventDefault();    
+	    evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+	  }
+
+	  // Setup the dnd listeners.
+	  var dropZone = document.getElementById('drop_zone');
+	  dropZone.addEventListener('dragover', handleDragOver, false);
+	  dropZone.addEventListener('drop', handleFileSelect, false); 
+	
+	  function previewFile() {
+		  var preview = document.querySelector('#showimg');
+		  var file    = document.querySelector('input[type=file]').files[0];
+		  var reader  = new FileReader();
+
+		  reader.addEventListener("load", function () {
+		    preview.src = reader.result;
+		  }, false);
+
+		  if (file) {
+		    reader.readAsDataURL(file);
+		  }
+		}  <input type="file" id="tfile" onchange="previewFile()"/><img id="showimg"/> */
+		
+		
+        $(document).ready(function(){
+        	$('.file_drag_area').on('dragover', function(){
+        		$(this).addClass('file_drag_over');
+        		return false;
+        	});
+        	
+        	$('.file_drag_area').on('dragleave', function(){
+        		$(this).removeClass('flag_drag_class');
+        		return false;
+        	});
+        	
+        	$('.file_drag_area').on('drop', function(event){
+        		event.preventDefault();    //防止瀏覽器執行預設動作
+        		event.stopPropagation();   //取消事件繼續往下傳遞
+        		$(this).removeClass('file_drag_over');
+        		var filesList = event.originalEvent.dataTransfer.files;  
+        		//dataTransfer負責存放被拖曳的檔案，拖曳的檔案就會在event.dataTransfer.files屬性中
+        		
+        		console.log(filesList);
+        		var reader = new FileReader();
+        		reader.addEventListener("load", function () {
+        			var img = $('#displayImg');
+        			img.prop("src",reader.result);
+        			img.show();    //顯示
+        		 }, false);
+        		reader.readAsDataURL(filesList[0]);
+        		
+        		
+        		
+        		var formData = new FormData();
+         	//	for(var i=0; i<filesList.length; i++){
+        			formData.append('file', filesList[0]);
+         	//	}
+        		
+        		$.ajax({
+        			url:"/online-store/image/uploadImg",
+        			method:"POST",
+        			data:formData,
+        			contentType:false,
+        			cache:false,
+        			processData:false,
+        			success:function(data){
+        				console.log(data);
+        			}
+        		})
+        	})
+        })
+	  
+		
 </script>
 </head>
 <body>
+    <div class="container" style="width:700px;" align="center">
+      <h3 class="text-center">Drag file hereaaaaaaaa</h3>
+      <div class="file_drag_area">Drag file here<img id="displayImg" style="display:none" class="file_photo"/></div>
+      <div id="uploaded_file"></div>
+    </div>
+
 	<table class="table table-hover" id="products">
 		<tr>
 			<th>產品<span>代號</span></th>
