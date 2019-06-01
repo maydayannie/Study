@@ -125,7 +125,7 @@ public class OnlineStoreServiceImpl implements OnlineStoreService {
 		Product prod = onlineStoreDAO.findProduct(vo.getProdId());
 		if(prod == null) {
 			prod = new Product();
-			BeanUtils.copyProperties(vo, prod);
+			BeanUtils.copyProperties(vo, prod);  //vo複製到prod
 			onlineStoreDAO.persistProduct(prod);
 		} else {
 			BeanUtils.copyProperties(vo, prod);

@@ -1,7 +1,10 @@
 package online.store.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import model.Product;
+import online.store.constants.OnlineShopConstant;
 import online.store.service.OnlineStoreService;
 import online.store.vo.PrdouctVO;
 import online.store.vo.User;
@@ -49,10 +54,28 @@ public class AdminController {
 		return 	productVOs;
 	}
 	
-	@RequestMapping(value="/saveProduct",consumes="application/json" ,method = RequestMethod.POST)
-	public @ResponseBody boolean saveProduct(@RequestBody PrdouctVO vo) {
+//	@RequestMapping(value="/saveProduct",consumes="application/json" ,method = RequestMethod.POST)
+//	public @ResponseBody boolean saveProduct(@RequestBody PrdouctVO vo) {
+//		model.addAttribute("products", service.searchProduct());
+//		logger.info(vo);
+//		service.saveProduct(vo);
+//		return true;		
+//	}
+	
+	@RequestMapping(value="/saveProduct" ,method = RequestMethod.POST)
+	public @ResponseBody boolean saveProduct(@ModelAttribute PrdouctVO vo) throws IllegalStateException, IOException {
 //		model.addAttribute("products", service.searchProduct());
 		logger.info(vo);
+		if(vo.getFile() != null) {
+			String dir =  OnlineShopConstant.UPLOAD_PATH;
+			String fileName = UUID.randomUUID().toString();
+			String suffix = "";
+			if(vo.getFile().getContentType().endsWith("jpeg")) {
+				suffix = ".jpg";
+			}
+			vo.getFile().transferTo(new File(dir + fileName + suffix));
+			vo.setFileName(fileName + suffix);
+		}
 		service.saveProduct(vo);
 		return true;		
 	}

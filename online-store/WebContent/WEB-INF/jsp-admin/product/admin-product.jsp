@@ -24,7 +24,7 @@
 }
 </style>
 <script type="text/javascript">
-	$(document).ready(function() {   //載入jquery
+  	$(document).ready(function() {   //載入jquery  
 		$.ajax({
 			url : '/online-store/admin/getProducts',   //指定要進行呼叫的位址
 			type : 'GET',  //請求方式，POST/GET (預設為GET)
@@ -104,19 +104,29 @@
 					});
 				});
 				
-				btnSave.click(function() {
+				btnSave.click(function() {  //如有要儲存圖片不能用json格式，要改用form bean寫法
 					var tr = $('#'+j);
-					var json = {
-						prodId: "", 
-						notes: "", 
-						price: 0, 
-						prodName: ""
+// 					var json = {
+// 						prodId: "", 
+// 						notes: "", 
+// 						price: 0, 
+// 						prodName: ""
+// 					}
+// 					json['prodId'] = tr.find('td:eq(0)').find('input').val(); 
+// 					json['prodName'] = tr.find('td:eq(1)').find('input').val();
+// 					json['notes'] = tr.find('td:eq(2)').find('input').val();
+// 					json['price'] = parseInt(tr.find('td:eq(3)').find('input').val());
+// 					console.log(json);
+					var formData = new FormData();  
+					//FormData 可以用來收集表單資訊，建構FromData實例後，利用以下的append自行加入想要的表單內容
+		        	formData.append('prodId', tr.find('td:eq(0)').find('input').val());
+		        	formData.append('prodName', tr.find('td:eq(1)').find('input').val());
+		        	formData.append('notes', tr.find('td:eq(2)').find('input').val());
+		        	formData.append('price', parseInt(tr.find('td:eq(3)').find('input').val()));
+// 		        	console.log(dataURItoBlob($('#displayImg').prop('src')));
+					if($('#displayImg').prop('src') != '') {
+			        	formData.append('file',dataURItoBlob($('#displayImg').prop('src')));
 					}
-					json['prodId'] = tr.find('td:eq(0)').find('input').val(); 
-					json['prodName'] = tr.find('td:eq(1)').find('input').val();
-					json['notes'] = tr.find('td:eq(2)').find('input').val();
-					json['price'] = parseInt(tr.find('td:eq(3)').find('input').val());
-					console.log(json);
 					$('#products').find('button').filter('.btn-outline-primary').each(function(){
 						$(this).show();
 					});
@@ -125,12 +135,16 @@
 					if(flag) {
 						$.ajax({
 							url : '/online-store/admin/saveProduct',
-							type : 'POST',
-							headers: {
-								"Accept" : "application/json; charset=utf-8",
-								"Content-Type": "application/json; charset=utf-8"
-								},
-							data : JSON.stringify(json),
+							method : 'POST',
+// 							headers: {
+// 								"Accept" : "application/json; charset=utf-8",
+// 								"Content-Type": "application/json; charset=utf-8"
+// 								},
+// 							data : JSON.stringify(json),
+							contentType:false,
+        					cache:false,
+        					processData:false,
+							data : formData,
 							error : function(xhr) {
 								alert('Ajax request 發生錯誤');
 							},
@@ -148,12 +162,7 @@
 					$(this).next().hide();				
 				});
 			})(jsonObj['prodId']);
-			/*var btnTd = $('<td>');
-			 btnTd.append(btnEdit);
-			btnTd.append(btnSave.hide());
-			btnTd.append(btnCancel.hide());
-			tr.append(btnTd);
-			table.append(tr); */
+			
 		}
 		console.log(response);
 	}
@@ -164,69 +173,6 @@
 		});
 	}
 	
-	
-	
-	/* upload = function(){
-		
-		var data = new FormData();
-		jQuery.each(jQuery('#file')[0].files, function(i, file){
-			data.append('file-'+i, file);
-		});
-		
-		$.ajax({
-			url:'fileUpload',
-			data:data,
-		    cache:false,
-		    contentType:false,
-		    processData:false,
-		    type:'POST',
-		    success: function(response){
-		    	debugger;
-		    	data = response.data;
-		    }
-		})
-	} */
-	
-	/* function handleFileSelect(evt) {
-	    evt.stopPropagation();
-	    evt.preventDefault();    //防止瀏覽器執行預設動作
-
-	    var files = evt.dataTransfer.files; // FileList object. 
-	    //dataTransfer負責存放被拖曳的檔案，拖曳的檔案就會在event.dataTransfer.files屬性中
-
-	    // files is a FileList of File objects. List some properties.
-	    var output = [];
-	    for (var i = 0, f; f = files[i]; i++) {
-	      output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ')</li>');
-	    }
-	    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
-	  }
-	
-	function handleDragOver(evt) {
-	    evt.stopPropagation();
-	    evt.preventDefault();    
-	    evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-	  }
-
-	  // Setup the dnd listeners.
-	  var dropZone = document.getElementById('drop_zone');
-	  dropZone.addEventListener('dragover', handleDragOver, false);
-	  dropZone.addEventListener('drop', handleFileSelect, false); 
-	
-	  function previewFile() {
-		  var preview = document.querySelector('#showimg');
-		  var file    = document.querySelector('input[type=file]').files[0];
-		  var reader  = new FileReader();
-
-		  reader.addEventListener("load", function () {
-		    preview.src = reader.result;
-		  }, false);
-
-		  if (file) {
-		    reader.readAsDataURL(file);
-		  }
-		}  <input type="file" id="tfile" onchange="previewFile()"/><img id="showimg"/> */
-		
 		
         $(document).ready(function(){
         	$('.file_drag_area').on('dragover', function(){
@@ -234,7 +180,7 @@
         		return false;
         	});
         	
-        	$('.file_drag_area').on('dragleave', function(){
+        	$('.file_drag_area').on('dragleave', function(evt){
         		$(this).removeClass('flag_drag_class');
         		return false;
         	});
@@ -248,13 +194,18 @@
         		
         		console.log(filesList);
         		var reader = new FileReader();
+        		//藉由 FileReader 物件，Web 應用程式能以非同步（asynchronously）方式讀取儲存在用戶端的檔案（或原始資料暫存）
+        		//內容，可以使用 File 或 Blob 物件指定要讀取的資料。
         		reader.addEventListener("load", function () {
         			var img = $('#displayImg');
-        			img.prop("src",reader.result);
+        			img.prop("src",reader.result);  
+        			//reader.result讀入的資料內容。只有在讀取完成之後此屬性才有效，而資料的格式則取決於是由哪一個方法進行讀取。
+        			//Base64編碼是一種圖片處理格式，但之後應要轉為BLOB
         			img.show();    //顯示
         		 }, false);
         		reader.readAsDataURL(filesList[0]);
-        		
+        		//開始讀取指定的 Blob，讀取完成後屬性 result 將以 data: URL 格式（base64 編碼）的字串來表示讀入的資料內容。
+        		//使用 DATA URI 將圖片以 Base64 編碼並內崁至網頁中，加速載入速度
         		
         		
         		var formData = new FormData();
@@ -274,8 +225,34 @@
         			}
         		})
         	})
-        })
-	  
+        }) 
+	   
+        function dataURItoBlob(dataURI) {
+		    // convert base64 to raw binary data held in a string
+		    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+		    var byteString = atob(dataURI.split(',')[1]);
+		
+		    // separate out the mime component
+		    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+		
+		    // write the bytes of the string to an ArrayBuffer
+		    var ab = new ArrayBuffer(byteString.length);
+		    var ia = new Uint8Array(ab);
+		    for (var i = 0; i < byteString.length; i++) {
+		        ia[i] = byteString.charCodeAt(i);
+		    }
+		
+		    //Old Code
+		    //write the ArrayBuffer to a blob, and you're done
+		    //var bb = new BlobBuilder();
+		    //bb.append(ab);
+		    //return bb.getBlob(mimeString);
+		
+		    //New Code
+		    return new Blob([ab], {type: mimeString});
+		
+		
+		}
 		
 </script>
 </head>
@@ -286,10 +263,10 @@
       <div id="uploaded_file"></div>
     </div>
 
-	<table class="table table-hover" id="products">
+	<table id ="products" class="table table-hover" >
 		<tr>
-			<th>產品<span>代號</span></th>
-			<th>產品<span>名稱</span></th>
+			<th>產品代號</th>
+			<th>產品名稱</th>
 			<th>說明</th>
 			<th>價錢</th>
 			<th>IMG</th>
@@ -297,18 +274,19 @@
 		</tr>
 		
 		
-<%-- 		<c:forEach var="pp" items="${prod}"> --%>
-<!-- 			<tr> -->
-<%-- 				<td>${pp.prodId}</td> --%>
-<%-- 				<td>${pp.prodName}</td> --%>
-<%-- 				<td>${pp.notes}</td> --%>
-<%-- 				<td>${pp.price}</td> --%>
-<!-- 				<td> -->
-<%-- 				   <a href="<c:url value="/prod/addProd/"/>${pp.prodId}"><button class="btn btn-outline-primary">編輯</button></a> --%>
-<%-- 				   <a href="<c:url value="/prod/addProd/"/>${pp.prodId}"><button class="btn btn-outline-primary">刪除</button></a> --%>
-<!-- 			    </td> -->
-<!-- 			</tr> -->
-<%-- 		</c:forEach> --%>
+ 		<%--  <c:forEach var="pp" items="${products}">
+			<tr> 
+				<td>${pp.prodId}</td>
+				<td>${pp.prodName}</td>
+				<td>${pp.notes}</td>
+				<td>${pp.price}</td>
+				<td>${pp.fileName}</td>
+ 				<td> 
+				   <a href="<c:url value="/prod/addProd/"/>${pp.prodId}"><button class="btn btn-outline-primary">編輯</button></a>
+				   <a href="<c:url value="/prod/addProd/"/>${pp.prodId}"><button class="btn btn-outline-primary">刪除</button></a>
+ 			    </td> 
+ 			</tr> 
+		</c:forEach>   --%>
 	</table>
 	
 	<a href="<c:url value="/cart/mycart/"/>"><button class="btn btn-success">My cart</button></a>
