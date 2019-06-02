@@ -19,9 +19,67 @@
   .file_photo{
     
     width:300px;
-    height:180px;
-    
+    height:180px; 
 }
+
+ul, li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.abgne_tab {
+	clear: left;
+	width: 1200px;
+	margin: 10px 0;
+}
+ul.tabs {
+	width: 100%;
+	height: 32px;
+	border-bottom: 1px solid #999;
+	border-left: 1px solid #999;
+}
+ul.tabs li {
+	float: left;
+	height: 31px;
+	line-height: 31px;
+	overflow: hidden;
+	position: relative;
+	margin-bottom: -1px;	/* 讓 li 往下移來遮住 ul 的部份 border-bottom */
+	border: 1px solid #999;
+	border-left: none;
+	background: #e1e1e1;
+}
+ul.tabs li a {
+	display: block;
+	padding: 0 20px;
+	color: #000;
+	border: 1px solid #fff;
+	text-decoration: none;
+}
+ul.tabs li a:hover {
+	background: #ccc;
+}
+ul.tabs li.active  {
+	background: #fff;
+	border-bottom: 1px solid#fff;
+}
+ul.tabs li.active a:hover {
+	background: #FF8888;
+}
+div.tab_container {
+	clear: left;
+	width: 100%;
+	border: 1px solid #999;
+	border-top: none;
+	background: #fff;
+}
+div.tab_container .tab_content {
+	padding: 20px;
+}
+div.tab_container .tab_content h2 {
+	margin: 0 0 20px;
+}
+
 </style>
 <script type="text/javascript">
   	$(document).ready(function() {   //載入jquery  
@@ -196,13 +254,29 @@
         		var reader = new FileReader();
         		//藉由 FileReader 物件，Web 應用程式能以非同步（asynchronously）方式讀取儲存在用戶端的檔案（或原始資料暫存）
         		//內容，可以使用 File 或 Blob 物件指定要讀取的資料。
+        		
+        		//畫面上有兩個拖拉圖片的地方，雖然功能一樣，但兩個的id還是要區分
+        		//event.target.id要判斷是因為當drop後要判斷現在在做哪一個事件目標(event.target)，才不會發生將圖片拖拉到
+        		//新增商品sheet，但沒有顯示，卻顯示在所有商品sheet
+        		if (event.target.id === 'img1'){    
         		reader.addEventListener("load", function () {
         			var img = $('#displayImg');
         			img.prop("src",reader.result);  
         			//reader.result讀入的資料內容。只有在讀取完成之後此屬性才有效，而資料的格式則取決於是由哪一個方法進行讀取。
         			//Base64編碼是一種圖片處理格式，但之後應要轉為BLOB
         			img.show();    //顯示
-        		 }, false);
+        		 }, false)
+        		} else if (event.target.id === 'img2'){
+        			reader.addEventListener("load", function () {
+            			var img = $('#displayImg2');
+            			img.prop("src",reader.result);  
+            			//reader.result讀入的資料內容。只有在讀取完成之後此屬性才有效，而資料的格式則取決於是由哪一個方法進行讀取。
+            			//Base64編碼是一種圖片處理格式，但之後應要轉為BLOB
+            			img.show();    //顯示
+            		 }, false)
+        		}
+        	//	alert(event.target.getAttribute('id'));
+        		
         		reader.readAsDataURL(filesList[0]);
         		//開始讀取指定的 Blob，讀取完成後屬性 result 將以 data: URL 格式（base64 編碼）的字串來表示讀入的資料內容。
         		//使用 DATA URI 將圖片以 Base64 編碼並內崁至網頁中，加速載入速度
@@ -215,7 +289,7 @@
         		
         		$.ajax({
         			url:"/online-store/image/uploadImg",
-        			method:"POST",
+        			//method:"POST",
         			data:formData,
         			contentType:false,
         			cache:false,
@@ -249,21 +323,90 @@
 		    //return bb.getBlob(mimeString);
 		
 		    //New Code
-		    return new Blob([ab], {type: mimeString});
-		
-		
+		    return new Blob([ab], {type: mimeString});	
 		}
+        
+        $(function(){
+        	// 預設顯示第一個 Tab
+        	var _showTab = 0;
+        	var $defaultLi = $('ul.tabs li').eq(_showTab).addClass('active');  //作用中的頁籤加上class="active"
+        	$($defaultLi.find('a').attr('href')).siblings().hide();
+         
+        	// 當 li 頁籤被點擊時...
+        	// 若要改成滑鼠移到 li 頁籤就切換時, 把 click 改成 mouseover
+        	$('ul.tabs li').click(function() {
+        		// 找出 li 中的超連結 href(#id)
+        		var $this = $(this),
+        			_clickTab = $this.find('a').attr('href');
+        		// 把目前點擊到的 li 頁籤加上 .active
+        		// 並把兄弟元素中有 .active 的都移除 class
+        		$this.addClass('active').siblings('.active').removeClass('active');
+        		// 淡入相對應的內容並隱藏兄弟元素
+        		$(_clickTab).stop(false, true).fadeIn().siblings().hide();
+        		
+        	//	var currentIndex = $(".tabs").tabs('option', 'active');
+        	//	$(".tabs").tabs('load', currentIndex);
+        		
+        		return false;
+        	}).find('a').focus(function(){
+        		this.blur();
+        	});
+        });
+        
+        function addNewProd(){
+        	var formData = new FormData();  
+        	formData.append('prodId', $("#tabAdd input[name='prodId']").val());
+        	formData.append('prodName', $("#tabAdd input[name='prodName']").val());
+        	formData.append('notes', $("#tabAdd input[name='notes']").val());
+        	formData.append('price', $("#tabAdd input[name='price']").val());
+        	if($('#displayImg2').prop('src') != '') {
+	        	formData.append('file',dataURItoBlob($('#displayImg2').prop('src')));
+			}
+        	
+        	$.ajax({
+				url : '/online-store/admin/saveProduct',
+				method : 'POST',
+				contentType:false,
+				cache:false,
+				processData:false,
+				data : formData,
+				error : function(xhr) {
+					alert('Ajax request 發生錯誤');
+				},
+				success : function(response) {
+					$('#tabAdd').find('input').each(function() {
+						$(this).html($(this).find('input').val());
+					
+					});
+				}
+			});
+        	
+        	$("#tabAdd").find("input").val("");
+        	//$("#displayImg2").removeAttr("src");
+        	$("#displayImg2").attr("src","");
+        	alert("新增成功");
+        }
 		
 </script>
 </head>
 <body>
-    <div class="container" style="width:700px;" align="center">
-      <h3 class="text-center">Drag file hereaaaaaaaa</h3>
-      <div class="file_drag_area">Drag file here<img id="displayImg" style="display:none" class="file_photo"/></div>
-      <div id="uploaded_file"></div>
-    </div>
+  <div id="tabpage" class="abgne_tab">
+    <ul class="tabs">
+      <li><a href="#tabAll">所有商品</a></li>
+      <li><a href="#tabAdd">新增商品</a></li>
+      <li><a href="#tab3">Search商品</a></li>
+    </ul>
+    
+    <div class="tab_container">
+      <div id="tabAll" class="tab_content">
 
-	<table id ="products" class="table table-hover" >
+		<div class="container" style="width:700px;" align="center">
+          <h3 class="text-center">Drag file hereaaaaaaaa</h3>
+          <div class="file_drag_area" id="img1">Drag file here<img id="displayImg" style="display:none" class="file_photo"/></div>
+          <div id="uploaded_file"></div>
+        </div>
+		
+		<table id ="products" class="table table-hover" >
 		<tr>
 			<th>產品代號</th>
 			<th>產品名稱</th>
@@ -272,23 +415,31 @@
 			<th>IMG</th>
 			<th>管理動作</th>
 		</tr>
-		
-		
- 		<%--  <c:forEach var="pp" items="${products}">
-			<tr> 
-				<td>${pp.prodId}</td>
-				<td>${pp.prodName}</td>
-				<td>${pp.notes}</td>
-				<td>${pp.price}</td>
-				<td>${pp.fileName}</td>
- 				<td> 
-				   <a href="<c:url value="/prod/addProd/"/>${pp.prodId}"><button class="btn btn-outline-primary">編輯</button></a>
-				   <a href="<c:url value="/prod/addProd/"/>${pp.prodId}"><button class="btn btn-outline-primary">刪除</button></a>
- 			    </td> 
- 			</tr> 
-		</c:forEach>   --%>
-	</table>
-	
+		</table>		
+      </div>
+        
+       <div id="tabAdd" class="tab_content">
+        <div class="container" style="width:700px;" align="center">
+          <h3 class="text-center">商品圖片</h3>
+          <div class="file_drag_area" id="img2">Drag file here<img id="displayImg2" style="display:none" class="file_photo"/></div>
+          <div id="uploaded_file"></div>
+        </div> 
+      
+        產品代號：<br><input type="text" name="prodId" ><br>
+        產品名稱：<br><input type="text" name="prodName" ><br>
+        說明：<br><input type="text" name="notes"><br>
+        價錢：<br><input type="text" name="price" onkeyup="value=value.replace(/[^\d]/g,'') "><br><br>
+      
+		<button class="btn btn-outline-primary" onclick="addNewProd()">確定新增</button></a><br>
+      </div>
+      
+      <div id="tab3" class="tab_content">
+        <h2>jQuery JavaScript Library.</h2>
+		<p>jQuery is a fasncise</p>
+      </div>
+    </div>
+  </div>  
+  	
 	<a href="<c:url value="/cart/mycart/"/>"><button class="btn btn-success">My cart</button></a>
 </body>
 </html>
