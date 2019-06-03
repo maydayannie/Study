@@ -27,12 +27,14 @@ import online.store.vo.PrdouctVO;
 import online.store.vo.User;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("/admin")  
+//@RequestMapping用在類上，表示類中的所有響應請求的方法都是以該地址作為父路徑，可有可無
 public class AdminController {
     Logger logger = LogManager.getLogger(ProductController.class);
 	
 	@Autowired
 	private OnlineStoreService service;
+	
 	
 	@RequestMapping(value="/allProduct",method = RequestMethod.GET)
 	public String mycartProd(@SessionAttribute("user") User user, ModelMap model) {
@@ -87,6 +89,25 @@ public class AdminController {
 		model.addAttribute("cusCart", service.searchCartdtl(user.getCartId()));
 		return "view.cart.cart-form";		
 	}
+	
+	//寫法1
+	@RequestMapping(value="/adminDelProduct/{prodId}", method = RequestMethod.GET)
+	//@RequestMapping用於方法上，表示在類的父路徑下追加方法上註解中的地址將會訪問到該方法
+	//這個必須有，所以此方法的訪問地址就是127.0.0.1:8080/online-store/admin/adminDelProduct/商品名稱
+	//@ResponseBody用於方法上，表示該方法的返回結果不會被解析為跳轉路徑
+	public @ResponseBody String adminDelProduct(@PathVariable("prodId") String prodId, ModelMap model) throws Exception {
+		logger.info("Admin deletes product:" + prodId);
+		service.adminDeleteProduct(prodId);
+		return "true";
+	}
+	
+	//寫法2
+//	@RequestMapping(value="/adminDelProduct/{prodId}", method = RequestMethod.GET)
+//	public String adminDelProduct(@PathVariable("prodId") String prodId, ModelMap model) throws Exception {
+//		logger.info("Admin deletes product:" + prodId);
+//		service.adminDeleteProduct(prodId);
+//		return "admin.product.admin-product";
+//	}
 
 }
 

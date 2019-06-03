@@ -83,7 +83,11 @@ div.tab_container .tab_content h2 {
 </style>
 <script type="text/javascript">
   	$(document).ready(function() {   //載入jquery  
-		$.ajax({
+  		getTable();
+	});
+  	
+  	function getTable() {
+  		$.ajax({
 			url : '/online-store/admin/getProducts',   //指定要進行呼叫的位址
 			type : 'GET',  //請求方式，POST/GET (預設為GET)
 			dataType : 'json',   //預期Server傳回的資料類型
@@ -92,11 +96,12 @@ div.tab_container .tab_content h2 {
 			},
 			success : onSuccess   //請求成功時執行函式
 		});
-	});
+  	}
 	
 	function onSuccess(response) {
 		
 		var table= $('#products');
+		table.empty();   //這邊要清空，否則重新reload時資料會在append一次就重複資料了
 		for(var i = 0 ; i < response.length ; i++) {
 			var jsonObj = response[i];
 			var tr = $('<tr>');    //add a <tr> to a dynamic table with jquery
@@ -114,18 +119,22 @@ div.tab_container .tab_content h2 {
 			
 			
 			var btnEdit = $('<button>').append('Edit');
-			//動態產生button，並且設置Edit顏色為紅色
+			//動態產生button，並且設置Edit顏色為紅色			
 			var btnSave = $('<button>').append('Save');
 			var btnCancel = $('<button>').append('Cancel');
+			var btnDelete = $('<button>').append('Delete');
+			
 			btnEdit.attr('class','btn btn-outline-primary');  
 			//attr 設置btnEdit的class屬性是btn btn-outline-primary
 			btnSave.attr('class','btn btn-outline-success');
 			btnCancel.attr('class','btn btn-outline-info');
+			btnDelete.attr('class','btn btn-outline-danger');
 			
 			var btnTd = $('<td>');
 			btnTd.append(btnEdit);
 			btnTd.append(btnSave.hide());
 			btnTd.append(btnCancel.hide());
+			btnTd.append(btnDelete);
 			tr.append(btnTd);
 			table.append(tr);
 			 
@@ -150,6 +159,7 @@ div.tab_container .tab_content h2 {
 					});
 					$(this).next().show();
 					$(this).next().next().show();
+					$(this).next().next().next().hide();
 				});
 				
 				btnCancel.click(function() {
@@ -159,6 +169,7 @@ div.tab_container .tab_content h2 {
 					$(this).prev().hide();
 					$('#products').find('button').filter('.btn-outline-primary').each(function(){
 						$(this).show();
+						$(this).next().next().next().show();
 					});
 				});
 				
@@ -219,6 +230,41 @@ div.tab_container .tab_content h2 {
 					$(this).hide();
 					$(this).next().hide();				
 				});
+				
+				
+				btnDelete.click(function(){
+					var tr = $('#'+j);					
+				/* 	 var formData = new FormData();  
+					//FormData 可以用來收集表單資訊，建構FromData實例後，利用以下的append自行加入想要的表單內容
+		        	formData.append('prodId', tr.find('td:eq(0)').val());  */					
+					  var json={
+							prodId: ""
+					}				
+					json['prodId'] = tr.find('td:eq(0)').text();   
+					let flag = confirm("Are you sure to delete this product?");								
+					if (flag){
+						$.ajax({
+							url: '/online-store/admin/adminDelProduct/'+json['prodId'],
+							method: 'GET',     
+							//如果用GET，則不能指定data與dataType（否則會錯），POST才需要指定data與dataType
+							/* data : JSON.stringify(json),
+							dataType : 'json', */
+        					error : function(xhr) {					
+								alert('aaa Ajax request 發生錯誤');
+							},
+							success : function(response) {
+								/* tr.find('td').each(function() {
+									$(this).html($(this).find('input').val());
+								}); */
+								alert('del ok');
+								getTable();
+// 								alert(response);
+							}
+						});
+					}
+					
+				});
+				
 			})(jsonObj['prodId']);
 			
 		}
@@ -344,8 +390,7 @@ div.tab_container .tab_content h2 {
         		// 淡入相對應的內容並隱藏兄弟元素
         		$(_clickTab).stop(false, true).fadeIn().siblings().hide();
         		
-        	//	var currentIndex = $(".tabs").tabs('option', 'active');
-        	//	$(".tabs").tabs('load', currentIndex);
+        		getTable();  //重新整理
         		
         		return false;
         	}).find('a').focus(function(){
@@ -392,9 +437,9 @@ div.tab_container .tab_content h2 {
 <body>
   <div id="tabpage" class="abgne_tab">
     <ul class="tabs">
-      <li><a href="#tabAll">所有商品</a></li>
-      <li><a href="#tabAdd">新增商品</a></li>
-      <li><a href="#tab3">Search商品</a></li>
+      <li onload="alert('aa')"><a href="#tabAll">所有商品</a></li>
+      <li onload="alert('bb')"><a href="#tabAdd">新增商品</a></li>
+      <li onload="alert('cc')"><a href="#tab3">Search商品</a></li>
     </ul>
     
     <div class="tab_container">

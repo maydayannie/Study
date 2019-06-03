@@ -21,6 +21,7 @@ public interface OnlineStoreService {
 	public List<CartDtl> searchCartdtl(String cartId);
 	public void delFromCart(User user, String prodId);
 	public void saveProduct(PrdouctVO vo);
+	public void adminDeleteProduct(String prodId) throws Exception;
 	
 }
 

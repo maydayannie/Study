@@ -73,6 +73,9 @@ public class OnlineStoreDAO {
 	
 	public List<Product> allProduct() {
 		Query query = this.entityManager.createQuery("SELECT a FROM Product a ");
+//		query.setFirstResult(page-1*pagesize );
+//		query.setMaxResults(page*pagesize);
+		
 		List<Product> resultList = query.getResultList();
 		return resultList;		
 	}
@@ -82,6 +85,8 @@ public class OnlineStoreDAO {
 		Customer c = this.entityManager.find(Customer.class, cusId);
 		return c.getCartBase();
 	}
+	
+
 	
 	
 	public List<CartBase> cusCart(User user){
@@ -141,6 +146,28 @@ public class OnlineStoreDAO {
 		this.entityManager.remove(entityManager.merge(cartDtl));
 		
 	}
+	
+	//寫法1的刪除
+//	public void removeProduct(String prodId) {
+//		Query q = this.entityManager.createQuery("delete from model.Product p where p.prodId = :prodId");
+//		q.setParameter("prodId", prodId);
+//		q.executeUpdate();
+//	}
+	
+	//寫法2的刪除
+	public void removeProduct(Product product) {
+		this.entityManager.remove(entityManager.merge(product));
+	}
+	
+
+	
+	public void removeCartprod(String prodId) throws Exception{		
+		Query q = this.entityManager.createQuery("delete from model.CartDtl c where c.id.prodId = :prodId");
+		q.setParameter("prodId", prodId);
+		q.executeUpdate();
+	}
+
+
 	
 	
 	

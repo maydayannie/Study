@@ -1,14 +1,14 @@
 package online.store.service.impl;
 
+import java.sql.SQLException;
 import java.util.List;
-
-import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import model.CartBase;
 import model.CartDtl;
@@ -119,7 +119,6 @@ public class OnlineStoreServiceImpl implements OnlineStoreService {
 		onlineStoreDAO.removeCartDtl(cartDtlTmp);
 	}
 
-
 	@Override
 	@Transactional
 	public void saveProduct(PrdouctVO vo) {
@@ -132,19 +131,37 @@ public class OnlineStoreServiceImpl implements OnlineStoreService {
 			BeanUtils.copyProperties(vo, prod);
 		}
 	}
+
+	//寫法1
+//	@Override
+//	@Transactional(rollbackFor=Throwable.class)
+//	public void adminDeleteProduct(String prodId) throws Exception{		
+//		onlineStoreDAO.removeProduct(prodId);
+//		onlineStoreDAO.removeCartprod(prodId);	
+//	}
+	
+	//寫法2
+	@Override
+	@Transactional(rollbackFor=Throwable.class)
+	public void adminDeleteProduct(String prodId) throws Exception{		
+		Product productTmp = new Product();
+		productTmp.setProdId(prodId);
+		onlineStoreDAO.removeProduct(productTmp);   
+		//admin刪除商品，要連同有把此商品加入購物車的也一起刪除
+		onlineStoreDAO.removeCartprod(prodId);	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
