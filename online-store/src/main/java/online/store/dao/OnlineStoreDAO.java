@@ -159,28 +159,19 @@ public class OnlineStoreDAO {
 		this.entityManager.remove(entityManager.merge(product));
 	}
 	
-
-	
 	public void removeCartprod(String prodId) throws Exception{		
 		Query q = this.entityManager.createQuery("delete from model.CartDtl c where c.id.prodId = :prodId");
 		q.setParameter("prodId", prodId);
 		q.executeUpdate();
 	}
 
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public List<Product> conditionProduct(Product product) {
+		//Query query = this.entityManager.createQuery("SELECT p FROM Product p where p.prodId = :prodId and p.prodName = :prodName");	
+		Query query = this.entityManager.createQuery("SELECT p FROM Product p where p.prodName LIKE :prodName");
+		//query.setParameter("prodId", "product.getProdId()");
+		query.setParameter("prodName", "%"+product.getProdName()+"%");	
+		List<Product> resultList = query.getResultList();
+		return resultList;
+	}	
 	
 }

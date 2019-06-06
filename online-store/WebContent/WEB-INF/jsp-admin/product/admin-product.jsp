@@ -430,7 +430,56 @@ div.tab_container .tab_content h2 {
         	//$("#displayImg2").removeAttr("src");
         	$("#displayImg2").attr("src","");
         	alert("新增成功");
-        }
+        };
+        
+        
+        
+         function adminSearchprod(){
+        	 var json={
+					prodId: "",
+					prodName: ""
+			}				
+			json['prodId'] = $("#tabSearch input[name='searchProdid']").val(); 
+        	json['prodName'] = $("#tabSearch input[name='searchProdname']").val(); 
+        //	var resobj = undefined;
+        	$.ajax({
+    			url : '/online-store/admin/adminSearchProducts',   //指定要進行呼叫的位址
+    			type : 'POST',  //請求方式，POST/GET (預設為GET)
+    			data : JSON.stringify(json),
+    			dataType : 'json',   //預期Server傳回的資料類型
+    			contentType : 'application/json; charset=utf-8',
+    			/*  	contentType:false,
+    		 	cache:false,
+    		 	processData:false, */
+    		 	async : true,
+    			error : function(xhr) {   //請求失敗時執行函式
+    				alert('Ajax request 發生錯誤');
+    			},
+    			success : onSearchSuccess  //請求成功時執行函式 
+    		}); 
+       // 	alert(resobj);
+        };
+         
+        
+        function onSearchSuccess(response){
+        	var table = $("#searchTable");
+        	//table.empty();
+        	for(var i = 0 ; i < response.length ; i++){     	
+        		var jsonObj = response[i];
+        		var tr = $('<tr>');   
+        		tr.attr('id',jsonObj['prodId']);
+        		tr.append($('<td>').append(jsonObj['prodId']));
+        		tr.append($('<td>').append(jsonObj['prodName']));
+        		tr.append($('<td>').append(jsonObj['notes']));
+    			tr.append($('<td>').append(jsonObj['price']));
+    			var getfileName = jsonObj['fileName'];
+    			var result = '<img src="/online-store/image/getImg/' + getfileName + '" width="50" height="60">';			
+    			tr.append($('<td>').append(result));
+    			table.append(tr);
+        	}
+        	
+        };
+       
 		
 </script>
 </head>
@@ -439,7 +488,7 @@ div.tab_container .tab_content h2 {
     <ul class="tabs">
       <li onload="alert('aa')"><a href="#tabAll">所有商品</a></li>
       <li onload="alert('bb')"><a href="#tabAdd">新增商品</a></li>
-      <li onload="alert('cc')"><a href="#tab3">Search商品</a></li>
+      <li onload="alert('cc')"><a href="#tabSearch">Search商品</a></li>
     </ul>
     
     <div class="tab_container">
@@ -470,6 +519,7 @@ div.tab_container .tab_content h2 {
           <div id="uploaded_file"></div>
         </div> 
       
+      
         產品代號：<br><input type="text" name="prodId" ><br>
         產品名稱：<br><input type="text" name="prodName" ><br>
         說明：<br><input type="text" name="notes"><br>
@@ -478,9 +528,26 @@ div.tab_container .tab_content h2 {
 		<button class="btn btn-outline-primary" onclick="addNewProd()">確定新增</button></a><br>
       </div>
       
-      <div id="tab3" class="tab_content">
-        <h2>jQuery JavaScript Library.</h2>
-		<p>jQuery is a fasncise</p>
+      <div id="tabSearch" class="tab_content">
+        產品代號<input type="text" name="searchProdid" size="15"> &nbsp;&nbsp;
+        產品名稱<input type="text" name="searchProdname" size="15"> &nbsp;&nbsp;
+        價錢範圍<input type="text" name="searchMaxprice" size="11" placeholder="輸入最小值" onkeyup="value=value.replace(/[^\d]/g,'') ">
+         ~ <input type="text" name="searchMinprice" size="11" placeholder="輸入最大值" onkeyup="value=value.replace(/[^\d]/g,'') "> 元 &nbsp;&nbsp; <br>
+        關鍵字<input type="text" name="keyWords" size="17"> &nbsp;&nbsp; 
+        <button class="btn btn-outline-primary" onclick="adminSearchprod()">查詢</button><br><br>
+        
+        <div>
+          <table id="searchTable" class="table table-hover">
+            <tr>
+              <th>產品代號</th>
+			  <th>產品名稱</th>
+			  <th>說明</th>
+			  <th>價錢</th>
+			  <th>IMG</th>
+            </tr>
+
+          </table>     
+        </div>
       </div>
     </div>
   </div>  

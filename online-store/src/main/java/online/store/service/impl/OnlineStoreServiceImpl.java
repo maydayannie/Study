@@ -1,6 +1,6 @@
 package online.store.service.impl;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,6 +17,7 @@ import model.Customer;
 import model.Product;
 import online.store.dao.OnlineStoreDAO;
 import online.store.service.OnlineStoreService;
+import online.store.vo.ConditionProductVO;
 import online.store.vo.PrdouctVO;
 import online.store.vo.User;
 
@@ -150,10 +151,27 @@ public class OnlineStoreServiceImpl implements OnlineStoreService {
 		//admin刪除商品，要連同有把此商品加入購物車的也一起刪除
 		onlineStoreDAO.removeCartprod(prodId);	
 	}
-	
-	
-	
-	
+		
+	@Override
+	//public List<Product> adSearchProduct(ConditionProductVO vo) {
+	public List<PrdouctVO> adSearchProduct(ConditionProductVO vo) {
+		Product productTmp = new Product();
+		productTmp.setProdId(vo.getProdId());
+		productTmp.setProdName(vo.getProdName());
+
+		logger.info("admin search prodid=" + vo.getProdId() + "and prodname=" + vo.getProdName());
+		//productTmp.setPrice(price);
+		List<Product> productList = onlineStoreDAO.conditionProduct(productTmp);
+		List<PrdouctVO> voList = new ArrayList<PrdouctVO>();
+		for(Product to : productList) {
+			PrdouctVO pvo = new PrdouctVO();
+			BeanUtils.copyProperties(to, pvo);
+			voList.add(pvo);		
+		}	
+		
+		return voList;
+	}
+
 	
 	
 	

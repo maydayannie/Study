@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import model.Product;
 import online.store.constants.OnlineShopConstant;
 import online.store.service.OnlineStoreService;
+import online.store.vo.ConditionProductVO;
 import online.store.vo.PrdouctVO;
 import online.store.vo.User;
 
@@ -108,6 +109,17 @@ public class AdminController {
 //		service.adminDeleteProduct(prodId);
 //		return "admin.product.admin-product";
 //	}
+	
+	
+	@RequestMapping(value="/adminSearchProducts", produces="application/json", method = RequestMethod.POST)
+	public @ResponseBody List<PrdouctVO> adminSearchProducts(@RequestBody ConditionProductVO vo) {
+//		logger.info("admin search prodid=" + vo.getProdId() + "and prodname=" + vo.getProdName());
+		logger.info("this is vo: "+vo+"QQQQ");
+		List<PrdouctVO> strList = new ArrayList<PrdouctVO>();
+		strList = service.adSearchProduct(vo);
+		logger.info("the results are : "+strList+"QQQQ");
+		return strList;
+	}
 
 }
 

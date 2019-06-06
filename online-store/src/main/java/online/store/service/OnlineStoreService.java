@@ -5,6 +5,7 @@ import java.util.List;
 import model.CartDtl;
 import model.Customer;
 import model.Product;
+import online.store.vo.ConditionProductVO;
 import online.store.vo.PrdouctVO;
 import online.store.vo.User;
 
@@ -22,6 +23,7 @@ public interface OnlineStoreService {
 	public void delFromCart(User user, String prodId);
 	public void saveProduct(PrdouctVO vo);
 	public void adminDeleteProduct(String prodId) throws Exception;
+	public List<PrdouctVO> adSearchProduct(ConditionProductVO vo);
 	
 }
 
