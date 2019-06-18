@@ -5,10 +5,18 @@
             <PatternLayout
                 pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" />
         </Console>
+        <RollingFile name="DailyRollingFile" fileName="/Users/annieshih/logs/online-store.log"
+			filePattern="/Users/annieshih/logs/backup/online-store.%d{yyyy-MM-dd}.log">
+			<PatternLayout pattern="[%-5level %d{yyyy/MM/dd HH:mm:ss.SSS} [%T] %c{1.}] %msg%n" />
+			<Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+		</RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="info" additivity="false">
+        <Root level="debug" additivity="false">
             <AppenderRef ref="console" />
+            <AppenderRef ref="DailyRollingFile" />
         </Root>
     </Loggers>
 </Configuration>

@@ -80,6 +80,7 @@ div.tab_container .tab_content h2 {
 	margin: 0 0 20px;
 }
 
+
 </style>
 <script type="text/javascript">
   	$(document).ready(function() {   //載入jquery  
@@ -100,8 +101,11 @@ div.tab_container .tab_content h2 {
 	
 	function onSuccess(response) {
 		
-		var table= $('#products');
-		table.empty();   //這邊要清空，否則重新reload時資料會在append一次就重複資料了
+		/* var table= $('#products');
+		table.empty();   //這邊要清空，否則重新reload時資料會在append一次就重複資料了 */
+		
+		var body = $("#bodyproducts");
+		body.empty();
 		for(var i = 0 ; i < response.length ; i++) {
 			var jsonObj = response[i];
 			var tr = $('<tr>');    //add a <tr> to a dynamic table with jquery
@@ -136,7 +140,8 @@ div.tab_container .tab_content h2 {
 			btnTd.append(btnCancel.hide());
 			btnTd.append(btnDelete);
 			tr.append(btnTd);
-			table.append(tr);
+			//table.append(tr);
+			body.append(tr);
 			 
 			(function(j) {
 				btnEdit.click(function() {
@@ -441,6 +446,8 @@ div.tab_container .tab_content h2 {
 			}				
 			json['prodId'] = $("#tabSearch input[name='searchProdid']").val(); 
         	json['prodName'] = $("#tabSearch input[name='searchProdname']").val(); 
+        	json['minPrice'] = $("#tabSearch input[name='searchMinprice']").val(); 
+        	json['maxPrice'] = $("#tabSearch input[name='searchMaxprice']").val(); 
         //	var resobj = undefined;
         	$.ajax({
     			url : '/online-store/admin/adminSearchProducts',   //指定要進行呼叫的位址
@@ -462,10 +469,13 @@ div.tab_container .tab_content h2 {
          
         
         function onSearchSuccess(response){
-        	var table = $("#searchTable");
-        	//table.empty();
+        	/* var table = $("#searchTable");
+        	table.empty(); */
+        	var body = $("#bodysearchTable");
+        	body.empty();
         	for(var i = 0 ; i < response.length ; i++){     	
         		var jsonObj = response[i];
+        	
         		var tr = $('<tr>');   
         		tr.attr('id',jsonObj['prodId']);
         		tr.append($('<td>').append(jsonObj['prodId']));
@@ -475,7 +485,9 @@ div.tab_container .tab_content h2 {
     			var getfileName = jsonObj['fileName'];
     			var result = '<img src="/online-store/image/getImg/' + getfileName + '" width="50" height="60">';			
     			tr.append($('<td>').append(result));
-    			table.append(tr);
+    			body.append(tr);
+
+    			//table.append(tr);
         	}
         	
         };
@@ -501,14 +513,18 @@ div.tab_container .tab_content h2 {
         </div>
 		
 		<table id ="products" class="table table-hover" >
-		<tr>
-			<th>產品代號</th>
-			<th>產品名稱</th>
-			<th>說明</th>
-			<th>價錢</th>
-			<th>IMG</th>
-			<th>管理動作</th>
-		</tr>
+		  <thead>
+		    <tr>
+				<th>產品代號</th>
+				<th>產品名稱</th>
+				<th>說明</th>
+				<th>價錢</th>
+				<th>IMG</th>
+				<th>管理動作</th>
+		    </tr>
+		  </thead>
+		  <tbody id="bodyproducts">
+		  </tbody>  
 		</table>		
       </div>
         
@@ -530,22 +546,24 @@ div.tab_container .tab_content h2 {
       
       <div id="tabSearch" class="tab_content">
         產品代號<input type="text" name="searchProdid" size="15"> &nbsp;&nbsp;
-        產品名稱<input type="text" name="searchProdname" size="15"> &nbsp;&nbsp;
-        價錢範圍<input type="text" name="searchMaxprice" size="11" placeholder="輸入最小值" onkeyup="value=value.replace(/[^\d]/g,'') ">
-         ~ <input type="text" name="searchMinprice" size="11" placeholder="輸入最大值" onkeyup="value=value.replace(/[^\d]/g,'') "> 元 &nbsp;&nbsp; <br>
-        關鍵字<input type="text" name="keyWords" size="17"> &nbsp;&nbsp; 
+        產品名稱關鍵字<input type="text" name="searchProdname" size="15"> &nbsp;&nbsp;
+        價錢範圍<input type="text" name="searchMinprice" size="11" placeholder="輸入最小值" onkeyup="value=value.replace(/[^\d]/g,'') ">
+         ~ <input type="text" name="searchMaxprice" size="11" placeholder="輸入最大值" onkeyup="value=value.replace(/[^\d]/g,'') "> 元 &nbsp;&nbsp; <br>
         <button class="btn btn-outline-primary" onclick="adminSearchprod()">查詢</button><br><br>
         
         <div>
           <table id="searchTable" class="table table-hover">
-            <tr>
-              <th>產品代號</th>
-			  <th>產品名稱</th>
-			  <th>說明</th>
-			  <th>價錢</th>
-			  <th>IMG</th>
-            </tr>
-
+             <thead>
+	            <tr>
+	              <th>產品代號</th>
+				  <th>產品名稱</th>
+				  <th>說明</th>
+				  <th>價錢</th>
+				  <th>IMG</th>
+	            </tr>
+             </thead>
+             <tbody id="bodysearchTable">
+             </tbody>
           </table>     
         </div>
       </div>

@@ -155,20 +155,26 @@ public class OnlineStoreServiceImpl implements OnlineStoreService {
 	@Override
 	//public List<Product> adSearchProduct(ConditionProductVO vo) {
 	public List<PrdouctVO> adSearchProduct(ConditionProductVO vo) {
-		Product productTmp = new Product();
-		productTmp.setProdId(vo.getProdId());
-		productTmp.setProdName(vo.getProdName());
-
-		logger.info("admin search prodid=" + vo.getProdId() + "and prodname=" + vo.getProdName());
-		//productTmp.setPrice(price);
-		List<Product> productList = onlineStoreDAO.conditionProduct(productTmp);
+//		Product productTmp = new Product();
+//		productTmp.setProdId(vo.getProdId());
+//		productTmp.setProdName(vo.getProdName());
+//
+//		logger.info("admin search prodid=" + vo.getProdId() + "and prodname=" + vo.getProdName());
+//		List<Product> productList = onlineStoreDAO.conditionProduct(productTmp);
+//		List<PrdouctVO> voList = new ArrayList<PrdouctVO>();
+//		for(Product to : productList) {
+//			PrdouctVO pvo = new PrdouctVO();
+//			BeanUtils.copyProperties(to, pvo);
+//			voList.add(pvo);		
+//		}	
+		
+		List<Product> productList = onlineStoreDAO.conditionProduct(vo);
 		List<PrdouctVO> voList = new ArrayList<PrdouctVO>();
 		for(Product to : productList) {
 			PrdouctVO pvo = new PrdouctVO();
 			BeanUtils.copyProperties(to, pvo);
 			voList.add(pvo);		
-		}	
-		
+		}
 		return voList;
 	}
 

@@ -26,6 +26,7 @@ import model.CartDtl_;
 import model.Customer;
 import model.Customer_;
 import model.Product;
+import online.store.vo.ConditionProductVO;
 import online.store.vo.User;
 
 @Repository
@@ -165,13 +166,45 @@ public class OnlineStoreDAO {
 		q.executeUpdate();
 	}
 
-	public List<Product> conditionProduct(Product product) {
-		//Query query = this.entityManager.createQuery("SELECT p FROM Product p where p.prodId = :prodId and p.prodName = :prodName");	
-		Query query = this.entityManager.createQuery("SELECT p FROM Product p where p.prodName LIKE :prodName");
-		//query.setParameter("prodId", "product.getProdId()");
-		query.setParameter("prodName", "%"+product.getProdName()+"%");	
+//	public List<Product> conditionProduct(Product product)	{	
+//		//Query query = this.entityManager.createQuery("SELECT p FROM Product p where p.prodId = :prodId and p.prodName = :prodName");	
+//		Query query = this.entityManager.createQuery("SELECT p FROM Product p where p.prodName LIKE :prodName");
+//		//query.setParameter("prodId", "product.getProdId()");
+//		query.setParameter("prodName", "%"+product.getProdName()+"%");	
+//		List<Product> resultList = query.getResultList();
+//		return resultList;
+//	}	
+	
+	public List<Product> conditionProduct(ConditionProductVO vo){
+//		Query query = this.entityManager.createQuery("SELECT p FROM Product p where 1=1 and p.price >= :minPrice and p.price <= :maxPrice");
+
+		String QueryStr="SELECT p FROM Product p where 1=1";
+//		
+		if (vo.getProdId() != "") {
+			QueryStr += " and p.prodId = :prodId ";
+		}
+		if (vo.getProdName() != "") {
+		    QueryStr += " and p.prodName like :prodName ";
+		}
+		if (vo.getMinPrice() > 0) {
+			QueryStr += " and p.price >= :minPrice and p.price <= :maxPrice";
+		}
+//		logger.info("str:"+QueryStr);
+		Query query = this.entityManager.createQuery(QueryStr);
+		if (vo.getProdId() != "") {
+		  query.setParameter("prodId", vo.getProdId());
+		}
+		if (vo.getProdName() != "") {
+		  query.setParameter("prodName", "%"+vo.getProdName()+"%");
+		}	
+		if (vo.getMinPrice() > 0) {
+		  query.setParameter("minPrice", vo.getMinPrice());
+		  query.setParameter("maxPrice", vo.getMaxPrice());
+		}
+		logger.info("minprice="+vo.getMinPrice()+"  and maxprice="+vo.getMaxPrice());
+		
 		List<Product> resultList = query.getResultList();
 		return resultList;
-	}	
+	}
 	
 }
